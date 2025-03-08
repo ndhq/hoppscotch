@@ -221,6 +221,11 @@ export type AuthPlatformDef = {
    * @returns A promise that resolves with the user info when auth is completed
    */
   signInUserWithMicrosoft: () => Promise<void>
+  /**
+   * Signs user in with OIDC.
+   * @returns A promise that resolves with the user info when auth is completed
+   */
+  signInUserWithOIDC: () => Promise<void>
 
   /**
    * Signs out the user from auth

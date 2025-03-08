@@ -42,6 +42,17 @@ const AuthProviderConfigurations = {
     InfraConfigEnum.MICROSOFT_SCOPE,
     InfraConfigEnum.MICROSOFT_TENANT,
   ],
+  [AuthProvider.OIDC]: [
+    InfraConfigEnum.OIDC_PROVIDER_NAME,
+    InfraConfigEnum.OIDC_ISSUER,
+    InfraConfigEnum.OIDC_AUTH_URL,
+    InfraConfigEnum.OIDC_TOKEN_URL,
+    InfraConfigEnum.OIDC_USER_INFO_URL,
+    InfraConfigEnum.OIDC_CLIENT_ID,
+    InfraConfigEnum.OIDC_CLIENT_SECRET,
+    InfraConfigEnum.OIDC_CALLBACK_URL,
+    InfraConfigEnum.OIDC_SCOPE,
+  ],
   [AuthProvider.EMAIL]:
     process.env.MAILER_USE_CUSTOM_CONFIGS === 'true'
       ? [

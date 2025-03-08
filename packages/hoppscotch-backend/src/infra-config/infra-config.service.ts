@@ -282,6 +282,18 @@ export class InfraConfigService implements OnModuleInit {
           configMap.MICROSOFT_SCOPE &&
           configMap.MICROSOFT_TENANT
         );
+      case AuthProvider.OIDC:
+        return (
+          configMap.OIDC_PROVIDER_NAME &&
+          configMap.OIDC_ISSUER &&
+          configMap.OIDC_AUTH_URL &&
+          configMap.OIDC_TOKEN_URL &&
+          configMap.OIDC_USER_INFO_URL &&
+          configMap.OIDC_CLIENT_ID &&
+          configMap.OIDC_CLIENT_SECRET &&
+          configMap.OIDC_CALLBACK_URL &&
+          configMap.OIDC_SCOPE
+        );
       case AuthProvider.EMAIL:
         if (configMap.MAILER_SMTP_ENABLE !== 'true') return false;
         if (configMap.MAILER_USE_CUSTOM_CONFIGS === 'true') {
@@ -620,6 +632,38 @@ export class InfraConfigService implements OnModuleInit {
           if (!infraConfigs[i].value) return E.left(INFRA_CONFIG_INVALID_INPUT);
           break;
         case InfraConfigEnum.MICROSOFT_TENANT:
+          if (!infraConfigs[i].value) return E.left(INFRA_CONFIG_INVALID_INPUT);
+          break;
+        case InfraConfigEnum.OIDC_PROVIDER_NAME:
+          if (!infraConfigs[i].value) return E.left(INFRA_CONFIG_INVALID_INPUT);
+          break;
+        case InfraConfigEnum.OIDC_ISSUER:
+          if (!validateUrl(infraConfigs[i].value))
+            return E.left(INFRA_CONFIG_INVALID_INPUT);
+          break;
+        case InfraConfigEnum.OIDC_AUTH_URL:
+          if (!validateUrl(infraConfigs[i].value))
+            return E.left(INFRA_CONFIG_INVALID_INPUT);
+          break;
+        case InfraConfigEnum.OIDC_TOKEN_URL:
+          if (!validateUrl(infraConfigs[i].value))
+            return E.left(INFRA_CONFIG_INVALID_INPUT);
+          break;
+        case InfraConfigEnum.OIDC_USER_INFO_URL:
+          if (!validateUrl(infraConfigs[i].value))
+            return E.left(INFRA_CONFIG_INVALID_INPUT);
+          break;
+        case InfraConfigEnum.OIDC_CLIENT_ID:
+          if (!infraConfigs[i].value) return E.left(INFRA_CONFIG_INVALID_INPUT);
+          break;
+        case InfraConfigEnum.OIDC_CLIENT_SECRET:
+          if (!infraConfigs[i].value) return E.left(INFRA_CONFIG_INVALID_INPUT);
+          break;
+        case InfraConfigEnum.OIDC_CALLBACK_URL:
+          if (!validateUrl(infraConfigs[i].value))
+            return E.left(INFRA_CONFIG_INVALID_INPUT);
+          break;
+        case InfraConfigEnum.OIDC_SCOPE:
           if (!infraConfigs[i].value) return E.left(INFRA_CONFIG_INVALID_INPUT);
           break;
         default:
