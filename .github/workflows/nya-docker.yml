@@ -56,4 +56,4 @@ jobs:
             linux/arm64
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.target }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.target }}:${{ github.ref_name }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.target }}:nya
