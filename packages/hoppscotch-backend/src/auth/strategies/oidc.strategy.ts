@@ -37,7 +37,7 @@ export class OIDCStrategy extends PassportStrategy(Strategy) {
 
     const profileWithProvider = {
       ...profile,
-      provider: iss,
+      provider: "OIDC",
     };
 
     if (O.isNone(user)) {
