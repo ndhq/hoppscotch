@@ -40,9 +40,7 @@ async function signInUserWithMicrosoftFB() {
 }
 
 async function signInUserWithOIDCFB() {
-  window.location.href = `${
-    import.meta.env.VITE_BACKEND_API_URL
-  }/auth/oidc`
+  window.location.href = `${import.meta.env.VITE_BACKEND_API_URL}/auth/oidc`
 }
 
 async function getInitialUserDetails() {
