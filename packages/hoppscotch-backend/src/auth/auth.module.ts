@@ -10,6 +10,7 @@ import { RTJwtStrategy } from './strategies/rt-jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GithubStrategy } from './strategies/github.strategy';
 import { MicrosoftStrategy } from './strategies/microsoft.strategy';
+import { OAuth2Strategy } from './strategies/oauth2.strategy';
 import { AuthProvider, authProviderCheck } from './helper';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
@@ -54,6 +55,9 @@ export class AuthModule {
         : []),
       ...(authProviderCheck(AuthProvider.MICROSOFT, allowedAuthProviders)
         ? [MicrosoftStrategy]
+        : []),
+      ...(authProviderCheck(AuthProvider.OAUTH2, allowedAuthProviders)
+        ? [OAuth2Strategy]
         : []),
     ];
 

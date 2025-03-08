@@ -23,6 +23,7 @@ import { AuthProvider, authCookieHandler, authProviderCheck } from './helper';
 import { GoogleSSOGuard } from './guards/google-sso.guard';
 import { GithubSSOGuard } from './guards/github-sso.guard';
 import { MicrosoftSSOGuard } from './guards/microsoft-sso-.guard';
+import { OAuth2SSOGuard } from './guards/oauth2-sso.guard';
 import { ThrottlerBehindProxyGuard } from 'src/guards/throttler-behind-proxy.guard';
 import { SkipThrottle } from '@nestjs/throttler';
 import { AUTH_PROVIDER_NOT_SPECIFIED } from 'src/errors';
@@ -166,6 +167,32 @@ export class AuthController {
   @UseGuards(MicrosoftSSOGuard)
   @UseInterceptors(UserLastLoginInterceptor)
   async microsoftAuthRedirect(@Request() req, @Res() res) {
+    const authTokens = await this.authService.generateAuthTokens(req.user.uid);
+    if (E.isLeft(authTokens)) throwHTTPErr(authTokens.left);
+    authCookieHandler(
+      res,
+      authTokens.right,
+      true,
+      req.authInfo.state.redirect_uri,
+    );
+  }
+
+  /**
+   ** Route to initiate SSO auth via OAuth2
+   */
+  @Get('oauth2')
+  @UseGuards(OAuth2SSOGuard)
+  async oauth2Auth(@Request() req) {}
+
+  /**
+   ** Callback URL for OAuth2 SSO
+   * @see https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow#how-it-works
+   */
+  @Get('oauth2/callback')
+  @SkipThrottle()
+  @UseGuards(OAuth2SSOGuard)
+  @UseInterceptors(UserLastLoginInterceptor)
+  async oauth2AuthRedirect(@Request() req, @Res() res) {
     const authTokens = await this.authService.generateAuthTokens(req.user.uid);
     if (E.isLeft(authTokens)) throwHTTPErr(authTokens.left);
     authCookieHandler(

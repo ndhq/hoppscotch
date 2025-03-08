@@ -266,6 +266,9 @@ importers:
       passport-microsoft:
         specifier: 2.1.0
         version: 2.1.0
+      passport-oauth2:
+        specifier: 1.8.0
+        version: 1.8.0
       posthog-node:
         specifier: 4.2.0
         version: 4.2.0
@@ -330,6 +333,9 @@ importers:
       '@types/passport-microsoft':
         specifier: 1.0.3
         version: 1.0.3
+      '@types/passport-oauth2':
+        specifier: 1.4.17
+        version: 1.4.17
       '@types/supertest':
         specifier: 6.0.2
         version: 6.0.2
@@ -5470,8 +5476,8 @@ packages:
   '@types/passport-microsoft@1.0.3':
     resolution: {integrity: sha512-Mqm/iTWEhnlS7RcgVlQMyMcXoqt51NbHtXZFAqcjSCZj4iUBu1MTlpw65X3xZ974K2WrlLQhOm3UMmLoUkMaMA==}
 
-  '@types/passport-oauth2@1.4.15':
-    resolution: {integrity: sha512-9cUTP/HStNSZmhxXGuRrBJfEWzIEJRub2eyJu3CvkA+8HAMc9W3aKdFhVq+Qz1hi42qn+GvSAnz3zwacDSYWpw==}
+  '@types/passport-oauth2@1.4.17':
+    resolution: {integrity: sha512-ODiAHvso6JcWJ6ZkHHroVp05EHGhqQN533PtFNBkg8Fy5mERDqsr030AX81M0D69ZcaMvhF92SRckEk2B0HYYg==}
 
   '@types/passport-strategy@0.2.38':
     resolution: {integrity: sha512-GC6eMqqojOooq993Tmnmp7AUTbbQSgilyvpCYQjT+H6JfG/g6RGc7nXEniZlp0zyKJ0WUdOiZWLBZft9Yug1uA==}
@@ -17686,13 +17692,13 @@ snapshots:
     dependencies:
       '@types/express': 5.0.0
       '@types/passport': 1.0.16
-      '@types/passport-oauth2': 1.4.15
+      '@types/passport-oauth2': 1.4.17
 
   '@types/passport-google-oauth20@2.0.16':
     dependencies:
       '@types/express': 5.0.0
       '@types/passport': 1.0.16
-      '@types/passport-oauth2': 1.4.15
+      '@types/passport-oauth2': 1.4.17
 
   '@types/passport-jwt@4.0.1':
     dependencies:
@@ -17701,9 +17707,9 @@ snapshots:
 
   '@types/passport-microsoft@1.0.3':
     dependencies:
-      '@types/passport-oauth2': 1.4.15
+      '@types/passport-oauth2': 1.4.17
 
-  '@types/passport-oauth2@1.4.15':
+  '@types/passport-oauth2@1.4.17':
     dependencies:
       '@types/express': 5.0.0
       '@types/oauth': 0.9.4
