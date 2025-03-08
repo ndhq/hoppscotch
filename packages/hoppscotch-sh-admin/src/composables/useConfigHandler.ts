@@ -1,7 +1,7 @@
-import { AnyVariables, UseMutationResponse } from '@urql/vue';
-import { cloneDeep } from 'lodash-es';
-import { onMounted, ref } from 'vue';
-import { useI18n } from '~/composables/i18n';
+import {AnyVariables, UseMutationResponse} from '@urql/vue';
+import {cloneDeep} from 'lodash-es';
+import {onMounted, ref} from 'vue';
+import {useI18n} from '~/composables/i18n';
 import {
   AllowedAuthProvidersDocument,
   AuthProvider,
@@ -19,19 +19,20 @@ import {
 } from '~/helpers/backend/graphql';
 import {
   ALL_CONFIGS,
-  CUSTOM_MAIL_CONFIGS,
   ConfigSection,
   ConfigTransform,
+  CUSTOM_MAIL_CONFIGS,
   GITHUB_CONFIGS,
   GOOGLE_CONFIGS,
   MAIL_CONFIGS,
   MICROSOFT_CONFIGS,
+  OIDC_CONFIGS,
   ServerConfigs,
   UpdatedConfigs,
 } from '~/helpers/configs';
-import { getCompiledErrorMessage } from '~/helpers/errors';
-import { useToast } from './toast';
-import { useClientHandler } from './useClientHandler';
+import {getCompiledErrorMessage} from '~/helpers/errors';
+import {useToast} from './toast';
+import {useClientHandler} from './useClientHandler';
 
 /** Composable that handles all operations related to server configurations
  * @param updatedConfigs A Config Object contatining the updated configs
@@ -113,6 +114,21 @@ export function useConfigHandler(updatedConfigs?: ServerConfigs) {
             tenant: getFieldValue(InfraConfigEnum.MicrosoftTenant),
           },
         },
+        oidc: {
+          name: 'oidc',
+          enabled: allowedAuthProviders.value.includes(AuthProvider.Oidc),
+          fields: {
+            provider_name: getFieldValue(InfraConfigEnum.OidcProviderName),
+            issuer: getFieldValue(InfraConfigEnum.OidcIssuer),
+            auth_url: getFieldValue(InfraConfigEnum.OidcAuthUrl),
+            token_url: getFieldValue(InfraConfigEnum.OidcTokenUrl),
+            user_info_url: getFieldValue(InfraConfigEnum.OidcUserInfoUrl),
+            client_id: getFieldValue(InfraConfigEnum.OidcClientId),
+            client_secret: getFieldValue(InfraConfigEnum.OidcClientSecret),
+            callback_url: getFieldValue(InfraConfigEnum.OidcCallbackUrl),
+            scope: getFieldValue(InfraConfigEnum.OidcScope),
+          }
+        }
       },
       mailConfigs: {
         name: 'email',
@@ -176,6 +192,7 @@ export function useConfigHandler(updatedConfigs?: ServerConfigs) {
       config.providers.github,
       config.providers.google,
       config.providers.microsoft,
+      config.providers.oidc,
       config.mailConfigs,
     ];
 
@@ -248,6 +265,11 @@ export function useConfigHandler(updatedConfigs?: ServerConfigs) {
         fields: updatedConfigs?.providers.microsoft.fields,
       },
       {
+        config: OIDC_CONFIGS,
+        enabled: updatedConfigs?.providers.oidc.enabled,
+        fields: updatedConfigs?.providers.oidc.fields,
+      },
+      {
         config: MAIL_CONFIGS,
         enabled: updatedConfigs?.mailConfigs.enabled,
         fields: mailConfigFields,
@@ -318,6 +340,12 @@ export function useConfigHandler(updatedConfigs?: ServerConfigs) {
       {
         provider: AuthProvider.Github,
         status: updatedConfigs?.providers.github.enabled
+          ? ServiceStatus.Enable
+          : ServiceStatus.Disable,
+      },
+      {
+        provider: AuthProvider.Oidc,
+        status: updatedConfigs?.providers.oidc.enabled
           ? ServiceStatus.Enable
           : ServiceStatus.Disable,
       },

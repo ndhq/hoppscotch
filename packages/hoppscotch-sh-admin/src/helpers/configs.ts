@@ -4,7 +4,7 @@ import { InfraConfigEnum } from './backend/graphql';
 // Check if any input validation has failed
 export const hasInputValidationFailed = ref(false);
 
-export type SsoAuthProviders = 'google' | 'microsoft' | 'github';
+export type SsoAuthProviders = 'google' | 'microsoft' | 'github' | 'oidc';
 
 export type ServerConfigs = {
   providers: {
@@ -39,6 +39,21 @@ export type ServerConfigs = {
         tenant: string;
       };
     };
+    oidc: {
+      name: SsoAuthProviders;
+      enabled: boolean;
+      fields: {
+        provider_name: string;
+        issuer: string;
+        auth_url: string;
+        token_url: string;
+        user_info_url: string;
+        client_id: string;
+        client_secret: string;
+        callback_url: string;
+        scope: string;
+      }
+    }
   };
 
   mailConfigs: {
@@ -152,6 +167,45 @@ export const GITHUB_CONFIGS: Config[] = [
   },
 ];
 
+export const OIDC_CONFIGS: Config[] = [
+  {
+    name: InfraConfigEnum.OidcProviderName,
+    key: 'provider_name',
+  },
+  {
+    name: InfraConfigEnum.OidcIssuer,
+    key: 'issuer',
+  },
+  {
+    name: InfraConfigEnum.OidcAuthUrl,
+    key: 'auth_url',
+  },
+  {
+    name: InfraConfigEnum.OidcTokenUrl,
+    key: 'token_url',
+  },
+  {
+    name: InfraConfigEnum.OidcUserInfoUrl,
+    key: 'user_info_url',
+  },
+  {
+    name: InfraConfigEnum.OidcClientId,
+    key: 'client_id',
+  },
+  {
+    name: InfraConfigEnum.OidcClientSecret,
+    key: 'client_secret',
+  },
+  {
+    name: InfraConfigEnum.OidcCallbackUrl,
+    key: 'callback_url',
+  },
+  {
+    name: InfraConfigEnum.OidcScope,
+    key: 'scope',
+  },
+]
+
 export const MAIL_CONFIGS: Config[] = [
   {
     name: InfraConfigEnum.MailerSmtpUrl,
@@ -215,6 +269,7 @@ export const ALL_CONFIGS = [
   GOOGLE_CONFIGS,
   MICROSOFT_CONFIGS,
   GITHUB_CONFIGS,
+  OIDC_CONFIGS,
   MAIL_CONFIGS,
   CUSTOM_MAIL_CONFIGS,
   DATA_SHARING_CONFIGS,
