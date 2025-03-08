@@ -24,20 +24,27 @@ export class OIDCStrategy extends PassportStrategy(Strategy) {
       clientSecret: configService.get('INFRA.OIDC_CLIENT_SECRET'),
       callbackURL: configService.get('INFRA.OIDC_CALLBACK_URL'),
       scope: [configService.get('INFRA.OIDC_SCOPE')],
-      store: true,
+      // store: true,
     });
   }
 
-  async validate(accessToken, refreshToken, profile, done) {
+  async validate(issuer, profile, done) {
+    console.log(issuer, profile);
+
     const user = await this.usersService.findUserByEmail(
       profile.emails[0].value,
     );
 
+    const profileWithProvider = {
+      ...profile,
+      provider: issuer,
+    };
+
     if (O.isNone(user)) {
       const createdUser = await this.usersService.createUserSSO(
-        accessToken,
-        refreshToken,
-        profile,
+        '', // accessToken not provided by `passport-openidconnect`
+        '', // refreshToken not provided by `passport-openidconnect`
+        profileWithProvider,
       );
       return createdUser;
     }
@@ -60,14 +67,14 @@ export class OIDCStrategy extends PassportStrategy(Strategy) {
      * * If user was created with another provider findUserByEmail may return true
      */
     const providerAccountExists =
-      await this.authService.checkIfProviderAccountExists(user.value, profile);
+      await this.authService.checkIfProviderAccountExists(user.value, profileWithProvider);
 
     if (O.isNone(providerAccountExists))
       await this.usersService.createProviderAccount(
         user.value,
-        accessToken,
-        refreshToken,
-        profile,
+        '', // accessToken not provided by `passport-openidconnect`
+        '', // refreshToken not provided by `passport-openidconnect`
+        profileWithProvider,
       );
 
     return user.value;
