@@ -28,8 +28,8 @@ export class OIDCStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(issuer, profile, done) {
-    console.log(issuer, profile);
+  async validate(iss, profile, context, idToken, accessToken, refreshToken, done) {
+    console.log(iss, profile, context, idToken, accessToken, refreshToken, done);
 
     const user = await this.usersService.findUserByEmail(
       profile.emails[0].value,
@@ -37,13 +37,13 @@ export class OIDCStrategy extends PassportStrategy(Strategy) {
 
     const profileWithProvider = {
       ...profile,
-      provider: issuer,
+      provider: iss,
     };
 
     if (O.isNone(user)) {
       const createdUser = await this.usersService.createUserSSO(
-        '', // accessToken not provided by `passport-openidconnect`
-        '', // refreshToken not provided by `passport-openidconnect`
+        accessToken,
+        refreshToken,
         profileWithProvider,
       );
       return createdUser;
@@ -72,8 +72,8 @@ export class OIDCStrategy extends PassportStrategy(Strategy) {
     if (O.isNone(providerAccountExists))
       await this.usersService.createProviderAccount(
         user.value,
-        '', // accessToken not provided by `passport-openidconnect`
-        '', // refreshToken not provided by `passport-openidconnect`
+        accessToken,
+        refreshToken,
         profileWithProvider,
       );
 
