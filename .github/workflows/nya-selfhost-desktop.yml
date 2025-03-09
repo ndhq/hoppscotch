@@ -59,6 +59,11 @@ jobs:
       - name: Install all dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Prepare CraphQL code
+        run: |
+          cd ./packages/hoppscotch-selfhost-desktop/
+          pnpm gql-codegen
+
       # If tagName and releaseId are omitted tauri-action will only build the app and won't try to upload any assets.
       - name: Just build
         if: "!startsWith(github.event.ref, 'refs/tags/')"
