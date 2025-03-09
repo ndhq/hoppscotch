@@ -19,14 +19,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: "-backend"
-            target: backend
-          - name: "-frontend"
-            target: app
-          - name: "-admin"
-            target: sh_admin
-          - name: ""
-            target: aio
+          - target: backend
+            name: "-backend"
+          - target: app
+            name: "-frontend"
+          - target: sh_admin
+            name: "-admin"
+          - target: aio
+            name: "" # default
     steps:
       - name: Checkout
         uses: actions/checkout@v4
