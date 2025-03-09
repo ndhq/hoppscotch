@@ -18,11 +18,15 @@ jobs:
       packages: write
     strategy:
       matrix:
-        target:
-          - backend
-          - app # frontend
-          - sh_admin # admin dashboard
-          - aio # AIO
+        include:
+          - name: "-backend"
+            target: backend
+          - name: "-frontend"
+            target: app
+          - name: "-admin"
+            target: sh_admin
+          - name: ""
+            target: aio
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,5 +58,5 @@ jobs:
           platforms: |
             linux/amd64
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.target }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.target }}:nya
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}${{ matrix.name }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}${{ matrix.name }}:nya
