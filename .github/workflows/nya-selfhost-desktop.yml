@@ -56,6 +56,11 @@ jobs:
         with:
           run_install: false
 
+      - name: Prepare dotenv for backend
+        run: |
+          cp .env.example .env
+          cp .env.example ./packages/hoppscotch-backend/.env
+
       - name: Prepare prisma for backend
         run: |
           cd ./packages/hoppscotch-backend/
@@ -64,7 +69,7 @@ jobs:
       - name: Install all dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Prepare CraphQL code
+      - name: Prepare GraphQL code
         run: |
           cd ./packages/hoppscotch-selfhost-desktop/
           pnpm gql-codegen
