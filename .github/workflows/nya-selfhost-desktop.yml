@@ -91,7 +91,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref }}
-          releaseName: "Hoppscotch (~nya) v__VERSION__" # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          releaseName: "Hoppscotch v__VERSION__" # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseBody: "请检视资源列表以下载并安装此版本应用程序。"
           releaseDraft: true
           prerelease: false
