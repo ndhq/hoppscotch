@@ -77,7 +77,8 @@ jobs:
           pnpm gql-codegen
 
       # If tagName and releaseId are omitted tauri-action will only build the app and won't try to upload any assets.
-      - name: Just build
+      - name: Build debug artifacts
+        id: buildDebug
         if: "!startsWith(github.event.ref, 'refs/tags/')"
         uses: tauri-apps/tauri-action@v0
         env:
@@ -85,8 +86,16 @@ jobs:
         with:
           args: ${{ matrix.args }}
           projectPath: "./packages/hoppscotch-selfhost-desktop"
+          includeDebug: true
 
-      - name: Create release with artifacts
+      - name: Upload debug artifacts
+        if: "!startsWith(github.event.ref, 'refs/tags/')"
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}
+          path: ${{ steps.buildDebug.outputs.artifactPaths }}
+
+      - name: Build release artifacts
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: tauri-apps/tauri-action@v0
         env:
