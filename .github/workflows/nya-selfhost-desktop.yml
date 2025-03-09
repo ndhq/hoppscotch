@@ -56,6 +56,11 @@ jobs:
         with:
           run_install: false
 
+      - name: Prepare prisma for backend
+        run: |
+          cd ./packages/hoppscotch-backend/
+          pnpm exec prisma generate
+
       - name: Install all dependencies
         run: pnpm install --frozen-lockfile
 
