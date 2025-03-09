@@ -46,6 +46,13 @@
           @click="signInWithMicrosoft"
         />
         <HoppSmartItem
+          v-if="allowedAuthProviders.includes('OIDC')"
+          :loading="signingInWithOIDC"
+          :icon="IconOIDC"
+          label="使用 OIDC 继续"
+          @click="signInWithOIDC"
+        />
+        <HoppSmartItem
           v-if="allowedAuthProviders.includes('EMAIL')"
           :icon="IconEmail"
           :label="t('state.continue_email')"
@@ -160,6 +167,7 @@ import IconEmail from '~icons/auth/email';
 import IconGithub from '~icons/auth/github';
 import IconGoogle from '~icons/auth/google';
 import IconMicrosoft from '~icons/auth/microsoft';
+import IconOIDC from '~icons/auth/oidc';
 import IconArrowLeft from '~icons/lucide/arrow-left';
 import IconFileText from '~icons/lucide/file-text';
 
@@ -177,6 +185,7 @@ const error = ref(false);
 const signingInWithGoogle = ref(false);
 const signingInWithGitHub = ref(false);
 const signingInWithMicrosoft = ref(false);
+const signingInWithOIDC = ref(false);
 const signingInWithEmail = ref(false);
 const mode = ref('sign-in');
 const nonAdminUser = ref(false);
@@ -228,6 +237,19 @@ const signInWithMicrosoft = () => {
   }
 
   signingInWithMicrosoft.value = false;
+};
+
+const signInWithOIDC = () => {
+  signingInWithOIDC.value = true;
+
+  try {
+    auth.signInUserWithOIDC();
+  } catch (e) {
+    console.error(e);
+    toast.error("无法使用 OIDC 登录");
+  }
+
+  signingInWithOIDC.value = false;
 };
 
 const signInWithEmail = async () => {

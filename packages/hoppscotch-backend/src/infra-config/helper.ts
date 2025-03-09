@@ -42,6 +42,17 @@ const AuthProviderConfigurations = {
     InfraConfigEnum.MICROSOFT_SCOPE,
     InfraConfigEnum.MICROSOFT_TENANT,
   ],
+  [AuthProvider.OIDC]: [
+    InfraConfigEnum.OIDC_PROVIDER_NAME,
+    InfraConfigEnum.OIDC_ISSUER,
+    InfraConfigEnum.OIDC_AUTH_URL,
+    InfraConfigEnum.OIDC_TOKEN_URL,
+    InfraConfigEnum.OIDC_USER_INFO_URL,
+    InfraConfigEnum.OIDC_CLIENT_ID,
+    InfraConfigEnum.OIDC_CLIENT_SECRET,
+    InfraConfigEnum.OIDC_CALLBACK_URL,
+    InfraConfigEnum.OIDC_SCOPE,
+  ],
   [AuthProvider.EMAIL]:
     process.env.MAILER_USE_CUSTOM_CONFIGS === 'true'
       ? [
@@ -236,6 +247,60 @@ export async function getDefaultInfraConfigs(): Promise<DefaultInfraConfig[]> {
       name: InfraConfigEnum.MICROSOFT_TENANT,
       value: process.env.MICROSOFT_TENANT,
       lastSyncedEnvFileValue: process.env.MICROSOFT_TENANT,
+      isEncrypted: false,
+    },
+    {
+      name: InfraConfigEnum.OIDC_PROVIDER_NAME,
+      value: process.env.OIDC_PROVIDER_NAME,
+      lastSyncedEnvFileValue: process.env.OIDC_PROVIDER_NAME,
+      isEncrypted: false,
+    },
+    {
+      name: InfraConfigEnum.OIDC_ISSUER,
+      value: process.env.OIDC_ISSUER,
+      lastSyncedEnvFileValue: process.env.OIDC_ISSUER,
+      isEncrypted: false,
+    },
+    {
+      name: InfraConfigEnum.OIDC_AUTH_URL,
+      value: process.env.OIDC_AUTH_URL,
+      lastSyncedEnvFileValue: process.env.OIDC_AUTH_URL,
+      isEncrypted: false,
+    },
+    {
+      name: InfraConfigEnum.OIDC_TOKEN_URL,
+      value: process.env.OIDC_TOKEN_URL,
+      lastSyncedEnvFileValue: process.env.OIDC_TOKEN_URL,
+      isEncrypted: false,
+    },
+    {
+      name: InfraConfigEnum.OIDC_USER_INFO_URL,
+      value: process.env.OIDC_USER_INFO_URL,
+      lastSyncedEnvFileValue: process.env.OIDC_USER_INFO_URL,
+      isEncrypted: false,
+    },
+    {
+      name: InfraConfigEnum.OIDC_CLIENT_ID,
+      value: process.env.OIDC_CLIENT_ID,
+      lastSyncedEnvFileValue: process.env.OIDC_CLIENT_ID,
+      isEncrypted: false,
+    },
+    {
+      name: InfraConfigEnum.OIDC_CLIENT_SECRET,
+      value: process.env.OIDC_CLIENT_SECRET,
+      lastSyncedEnvFileValue: process.env.OIDC_CLIENT_SECRET,
+      isEncrypted: false,
+    },
+    {
+      name: InfraConfigEnum.OIDC_CALLBACK_URL,
+      value: process.env.OIDC_CALLBACK_URL,
+      lastSyncedEnvFileValue: process.env.OIDC_CALLBACK_URL,
+      isEncrypted: false,
+    },
+    {
+      name: InfraConfigEnum.OIDC_SCOPE,
+      value: process.env.OIDC_SCOPE,
+      lastSyncedEnvFileValue: process.env.OIDC_SCOPE,
       isEncrypted: false,
     },
     {

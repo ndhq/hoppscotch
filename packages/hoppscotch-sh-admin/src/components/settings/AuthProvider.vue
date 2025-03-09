@@ -100,7 +100,13 @@ type ProviderFieldKeys = keyof ProviderFields;
 
 type ProviderFields = {
   [Field in keyof ServerConfigs['providers'][SsoAuthProviders]['fields']]: boolean;
-} & Partial<{ tenant: boolean }>;
+} & Partial<{ tenant: boolean }> & Partial<{
+  provider_name: boolean,
+  issuer: boolean,
+  auth_url: boolean,
+  token_url: boolean,
+  user_info_url: boolean,
+}>;
 
 type ProviderFieldMetadata = {
   name: string;
@@ -112,27 +118,52 @@ const providerConfigFields = <ProviderFieldMetadata[]>[
   {
     name: t('configs.auth_providers.client_id'),
     key: 'client_id',
-    applicableProviders: ['google', 'github', 'microsoft'],
+    applicableProviders: ['google', 'github', 'microsoft', 'oidc'],
   },
   {
     name: t('configs.auth_providers.client_secret'),
     key: 'client_secret',
-    applicableProviders: ['google', 'github', 'microsoft'],
+    applicableProviders: ['google', 'github', 'microsoft', 'oidc'],
   },
   {
     name: t('configs.auth_providers.callback_url'),
     key: 'callback_url',
-    applicableProviders: ['google', 'github', 'microsoft'],
+    applicableProviders: ['google', 'github', 'microsoft', 'oidc'],
   },
   {
     name: t('configs.auth_providers.scope'),
     key: 'scope',
-    applicableProviders: ['google', 'github', 'microsoft'],
+    applicableProviders: ['google', 'github', 'microsoft', 'oidc'],
   },
   {
     name: t('configs.auth_providers.tenant'),
     key: 'tenant',
     applicableProviders: ['microsoft'],
+  },
+  {
+    name: "提供者名字",
+    key: 'provider_name',
+    applicableProviders: ['oidc'],
+  },
+  {
+    name: "签发者",
+    key: 'issuer',
+    applicableProviders: ['oidc'],
+  },
+  {
+    name: "授权端点",
+    key: 'auth_url',
+    applicableProviders: ['oidc'],
+  },
+  {
+    name: "令牌端点",
+    key: 'token_url',
+    applicableProviders: ['oidc'],
+  },
+  {
+    name: "用户信息端点",
+    key: 'user_info_url',
+    applicableProviders: ['oidc'],
   },
 ];
 
@@ -156,6 +187,17 @@ const maskState = reactive<Record<SsoAuthProviders, ProviderFields>>({
     scope: true,
     tenant: true,
   },
+  oidc: {
+    provider_name: true,
+    issuer: true,
+    auth_url: true,
+    token_url: true,
+    user_info_url: true,
+    client_id: true,
+    client_secret: true,
+    callback_url: true,
+    scope: true,
+  }
 });
 
 const toggleMask = (

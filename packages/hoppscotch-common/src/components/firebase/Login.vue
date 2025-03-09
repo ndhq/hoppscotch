@@ -132,6 +132,7 @@ import IconEmail from "~icons/auth/email"
 import IconGithub from "~icons/auth/github"
 import IconGoogle from "~icons/auth/google"
 import IconMicrosoft from "~icons/auth/microsoft"
+import IconOIDC from "~icons/auth/oidc"
 import IconArrowLeft from "~icons/lucide/arrow-left"
 
 import { useService } from "dioc/vue"
@@ -159,6 +160,7 @@ const isLoadingAllowedAuthProviders = ref(true)
 const signingInWithGoogle = ref(false)
 const signingInWithGitHub = ref(false)
 const signingInWithMicrosoft = ref(false)
+const signingInWithOIDC = ref(false)
 const signingInWithEmail = ref(false)
 const mode = ref("sign-in")
 
@@ -311,6 +313,28 @@ const signInWithMicrosoft = async () => {
   signingInWithMicrosoft.value = false
 }
 
+const signInWithOIDC = async () => {
+  signingInWithOIDC.value = true
+
+  try {
+    await platform.auth.signInUserWithOIDC()
+    // this.showLoginSuccess()
+  } catch (e) {
+    console.error(e)
+    /*
+        A auth/account-exists-with-different-credential Firebase error wont happen between MS with Google or Github
+        If a Github account exists and user then logs in with MS email we get a "Something went wrong toast" and console errors and MS replaces GH as only provider.
+        The error messages are as follows:
+            FirebaseError: Firebase: Error (auth/popup-closed-by-user).
+            @firebase/auth: Auth (9.6.11): INTERNAL ASSERTION FAILED: Pending promise was never set
+        They may be related to https://github.com/firebase/firebaseui-web/issues/947
+        */
+    toast.error(`${t("error.something_went_wrong")}`)
+  }
+
+  signingInWithOIDC.value = false
+}
+
 const signInWithEmail = async () => {
   signingInWithEmail.value = true
 
@@ -359,6 +383,13 @@ const authProvidersAvailable: AuthProviderItem[] = [
     label: t("auth.continue_with_microsoft"),
     action: signInWithMicrosoft,
     isLoading: signingInWithMicrosoft,
+  },
+  {
+    id: "OIDC",
+    icon: IconOIDC,
+    label: `使用 OIDC 登录`,
+    action: signInWithOIDC,
+    isLoading: signingInWithOIDC,
   },
   {
     id: "EMAIL",
