@@ -56,7 +56,7 @@ jobs:
         with:
           run_install: false
 
-      - name: Install frontend dependencies
+      - name: Install all dependencies
         run: pnpm install --frozen-lockfile
 
       # If tagName and releaseId are omitted tauri-action will only build the app and won't try to upload any assets.
