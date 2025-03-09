@@ -20,6 +20,7 @@ overrides:
   dset@3.1.3: 3.1.4
   nanoid@3.3.7: 3.3.8
   execa@0.10.0: 2.0.0
+  passport-openidconnect: npm:@ndhq/passport-openidconnect@0.1.2-nya
 
 packageExtensionsChecksum: sha256-Qhsch/G1LLagBL1kRb8nf11C5HcyCWi8Px3h3uWxYUw=
 
@@ -267,8 +268,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       passport-openidconnect:
-        specifier: 0.1.2
-        version: 0.1.2
+        specifier: npm:@ndhq/passport-openidconnect@0.1.2-nya
+        version: '@ndhq/passport-openidconnect@0.1.2-nya'
       posthog-node:
         specifier: 4.2.0
         version: 4.2.0
@@ -4384,6 +4385,10 @@ packages:
 
   '@microsoft/tsdoc@0.15.0':
     resolution: {integrity: sha512-HZpPoABogPvjeJOdzCOSJsXeL/SMCBgBZMVC3X3d7YYp2gf31MfxhUoYUNwf1ERPJOnQc0wkFn9trqI6ZEdZuA==}
+
+  '@ndhq/passport-openidconnect@0.1.2-nya':
+    resolution: {integrity: sha512-d8KHyKgvzkYC8X50X7fL5y2u2Bh/qs1JrwanS4j1dyYkyLWxhHNZ1wPovdeEtoYdZi59Wv8HUDrxcWzIIj6hSg==}
+    engines: {node: '>= 0.6.0'}
 
   '@nestjs-modules/mailer@2.0.2':
     resolution: {integrity: sha512-+z4mADQasg0H1ZaGu4zZTuKv2pu+XdErqx99PLFPzCDNTN/q9U59WPgkxVaHnsvKHNopLj5Xap7G4ZpptduoYw==}
@@ -10273,10 +10278,6 @@ packages:
   passport-oauth2@1.8.0:
     resolution: {integrity: sha512-cjsQbOrXIDE4P8nNb3FQRCCmJJ/utnFKEz2NX209f7KOHPoX18gF7gBzBbLLsj2/je4KrgiwLLGjf0lm9rtTBA==}
     engines: {node: '>= 0.4.0'}
-
-  passport-openidconnect@0.1.2:
-    resolution: {integrity: sha512-JX3rTyW+KFZ/E9OF/IpXJPbyLO9vGzcmXB5FgSP2jfL3LGKJPdV7zUE8rWeKeeI/iueQggOeFa3onrCmhxXZTg==}
-    engines: {node: '>= 0.6.0'}
 
   passport-strategy@1.0.0:
     resolution: {integrity: sha512-CB97UUvDKJde2V0KDWWB3lyf6PC3FaZP7YxZ2G8OAtn9p4HI9j9JLP9qjOGZFvyl8uwNT8qM+hGnz/n16NI7oA==}
@@ -16672,6 +16673,11 @@ snapshots:
       - supports-color
 
   '@microsoft/tsdoc@0.15.0': {}
+
+  '@ndhq/passport-openidconnect@0.1.2-nya':
+    dependencies:
+      oauth: 0.10.0
+      passport-strategy: 1.0.0
 
   '@nestjs-modules/mailer@2.0.2(@nestjs/common@10.4.4(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.4)(nodemailer@6.9.15)(relateurl@0.2.7)(svgo@3.3.2)(terser@5.34.1)(typescript@5.5.4)':
     dependencies:
@@ -24449,11 +24455,6 @@ snapshots:
       passport-strategy: 1.0.0
       uid2: 0.0.4
       utils-merge: 1.0.1
-
-  passport-openidconnect@0.1.2:
-    dependencies:
-      oauth: 0.10.0
-      passport-strategy: 1.0.0
 
   passport-strategy@1.0.0: {}
 

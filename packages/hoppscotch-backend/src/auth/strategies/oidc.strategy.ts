@@ -28,9 +28,7 @@ export class OIDCStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(iss, profile, context, idToken, accessToken, refreshToken, done) {
-    console.log(iss, profile, context, idToken, accessToken, refreshToken, done);
-
+  async validate(accessToken: string, refreshToken: string, profile, done) {
     const user = await this.usersService.findUserByEmail(
       profile.emails[0].value,
     );
