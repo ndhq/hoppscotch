@@ -69,7 +69,7 @@ jobs:
           pnpm exec prisma generate
 
       - name: Install all dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --force
 
       - name: Prepare GraphQL code
         run: |
