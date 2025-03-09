@@ -97,7 +97,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.identifier }}
-          path: ${{ steps.buildDebug.outputs.artifactPaths }}
+          path: packages/hoppscotch-selfhost-desktop/src-tauri/target/
 
       - name: Build release artifacts
         if: startsWith(github.event.ref, 'refs/tags/')
