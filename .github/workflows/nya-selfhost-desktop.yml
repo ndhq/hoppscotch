@@ -20,12 +20,16 @@ jobs:
         include:
           - platform: "macos-latest" # for Arm based macs (M1 and above).
             args: "--target aarch64-apple-darwin"
+            identifier: "macos-aarch64"
           - platform: "macos-latest" # for Intel based macs.
             args: "--target x86_64-apple-darwin"
+            identifier: "macos-amd64"
           - platform: "ubuntu-20.04" # for Tauri v1 you could replace this with ubuntu-20.04.
             args: ""
+            identifier: "linux"
           - platform: "windows-latest"
             args: ""
+            identifier: "windows"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -92,7 +96,7 @@ jobs:
         if: "!startsWith(github.event.ref, 'refs/tags/')"
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform }}
+          name: ${{ matrix.identifier }}
           path: ${{ steps.buildDebug.outputs.artifactPaths }}
 
       - name: Build release artifacts
