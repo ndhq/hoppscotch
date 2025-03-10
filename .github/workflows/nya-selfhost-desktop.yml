@@ -25,7 +25,7 @@ jobs:
 
       - name: Prepare release
         if: startsWith(github.event.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@2
+        uses: softprops/action-gh-release@v2
         with:
           name: "Hoppscotch (nya) v${{ steps.ver.outputs.tag }}"
           body: "请检视资源列表以下载并安装此版本应用程序。"
@@ -135,7 +135,7 @@ jobs:
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.zip.sig
       - name: Upload files to release (Windows)
         if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'windows'
-        uses: softprops/action-gh-release@2
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi
@@ -161,7 +161,7 @@ jobs:
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig
       - name: Upload files to release (Linux)
         if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'linux'
-        uses: softprops/action-gh-release@2
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb
@@ -186,7 +186,7 @@ jobs:
             packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch-aarch64.app.tar.gz.sig
       - name: Upload files to release (MacOS - ARM64)
         if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'macos-aarch64'
-        uses: softprops/action-gh-release@2
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/Hoppscotch-aarch64.dmg
@@ -210,7 +210,7 @@ jobs:
             packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch-amd64.app.tar.gz.sig
       - name: Upload files to release (MacOS - ARM64)
         if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'macos-amd64'
-        uses: softprops/action-gh-release@2
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/Hoppscotch-amd64.dmg
