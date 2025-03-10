@@ -21,6 +21,9 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            packages/hoppscotch-desktop/src-tauri/tauri.conf.json
 
       - name: Prepare version tag
         id: ver
