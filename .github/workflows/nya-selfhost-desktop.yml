@@ -162,6 +162,7 @@ jobs:
         if: matrix.identifier == 'linux'
         run: |
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.deb" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb"
+          mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.rpm" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch-amd64.rpm"
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.AppImage" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage"
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.AppImage.tar.gz" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz"
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.AppImage.tar.gz.sig" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig"
@@ -172,6 +173,7 @@ jobs:
           name: ${{ matrix.identifier }}
           path: |
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch-amd64.rpm
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig
@@ -181,6 +183,7 @@ jobs:
         with:
           files: |
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch-amd64.rpm
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig
