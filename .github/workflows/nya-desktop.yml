@@ -139,8 +139,8 @@ jobs:
         run: |
           Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64_en-US.msi" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi"
           Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64_en-US.msi.sig" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi.sig"
-          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64-setup.exe" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.exe"
-          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64-setup.exe.sig" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.exe.sig"
+          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\nsis\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64-setup.exe" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\nsis\Hoppscotch-amd64-setup.exe"
+          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\nsis\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64-setup.exe.sig" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\nsis\Hoppscotch-amd64-setup.exe.sig"
       - name: Upload files as artifacts (Windows)
         if: "!startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'windows'"
         uses: actions/upload-artifact@v4
@@ -149,8 +149,8 @@ jobs:
           path: |
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.sig
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.exe
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.exe.sig
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/nsis/Hoppscotch-amd64-setup.exe
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/nsis/Hoppscotch-amd64-setup.exe.sig
       - name: Upload files to release (Windows)
         if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'windows'
         uses: softprops/action-gh-release@v2
@@ -158,8 +158,8 @@ jobs:
           files: |
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.sig
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.exe
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.exe.sig
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/nsis/Hoppscotch-amd64-setup.exe
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/nsis/Hoppscotch-amd64-setup.exe.sig
 
       - name: Move files (Linux)
         if: matrix.identifier == 'linux'
