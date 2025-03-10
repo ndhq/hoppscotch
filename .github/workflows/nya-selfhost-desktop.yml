@@ -80,7 +80,7 @@ jobs:
         if: matrix.identifier == 'linux'
         run: |
           sudo apt update
-          sudo apt install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libglib2.0-dev libgtk-3-dev
+          sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libgtk-3-dev
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -138,8 +138,9 @@ jobs:
         shell: pwsh
         run: |
           Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64_en-US.msi" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi"
-          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64_en-US.msi.zip" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi.zip"
-          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64_en-US.msi.zip.sig" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi.zip.sig"
+          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64_en-US.msi.sig" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi.sig"
+          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64-setup.exe" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.exe"
+          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare.outputs.tag }}_x64-setup.exe.sig" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.exe.sig"
       - name: Upload files as artifacts (Windows)
         if: "!startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'windows'"
         uses: actions/upload-artifact@v4
@@ -147,16 +148,18 @@ jobs:
           name: ${{ matrix.identifier }}
           path: |
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.zip
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.zip.sig
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.sig
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.exe
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.exe.sig
       - name: Upload files to release (Windows)
         if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'windows'
         uses: softprops/action-gh-release@v2
         with:
           files: |
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.zip
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.zip.sig
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.sig
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.exe
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.exe.sig
 
       - name: Move files (Linux)
         if: matrix.identifier == 'linux'
@@ -164,8 +167,7 @@ jobs:
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.deb" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb"
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.rpm" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch-amd64.rpm"
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.AppImage" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage"
-          mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.AppImage.tar.gz" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz"
-          mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.AppImage.tar.gz.sig" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig"
+          mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.AppImage.sig" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.sig"
       - name: Upload files as artifacts (Linux)
         if: "!startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'linux'"
         uses: actions/upload-artifact@v4
@@ -175,8 +177,7 @@ jobs:
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch-amd64.rpm
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.sig
       - name: Upload files to release (Linux)
         if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'linux'
         uses: softprops/action-gh-release@v2
@@ -185,8 +186,7 @@ jobs:
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch-amd64.rpm
             packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz
-            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.sig
 
       - name: Move files (MacOS - ARM64)
         if: matrix.identifier == 'macos-aarch64'
