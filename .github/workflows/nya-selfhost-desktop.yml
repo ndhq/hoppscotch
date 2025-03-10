@@ -108,13 +108,28 @@ jobs:
       - name: Install all dependencies
         run: pnpm install --frozen-lockfile --force
 
-      - name: Full build
-        env:
-          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+      - name: Prepare frontend assets
         run: |
-          cd ./packages/hoppscotch-desktop/
-          pnpm build:full
+          cd ./packages/hoppscotch-selfhost-web
+          pnpm install
+          pnpm generate
+
+      - name: Bundle frontend assets
+        run: |
+          cd ./packages/hoppscotch-desktop/crates/webapp-bundler
+          cargo build --release
+          cd ./target/release
+          ./webapp-bundler --input ../../../../../hoppscotch-selfhost-web/dist --output ../../../../bundle.zip --manifest ../../../../manifest.json
+
+      - name: Run build
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+        with:
+          args: ${{ matrix.args }}
+          projectPath: "./packages/hoppscotch-desktop"
 
       #############################################
       ##     Move & upload release artifacts     ##
