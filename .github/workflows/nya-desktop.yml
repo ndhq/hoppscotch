@@ -29,14 +29,6 @@ jobs:
         id: ver
         run: echo "tag=$(jq .version packages/hoppscotch-desktop/src-tauri/tauri.conf.json | tr -d '"')" >> $GITHUB_OUTPUT
 
-      - name: Prepare release
-        if: startsWith(github.event.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          name: "Hoppscotch (nya) v${{ steps.ver.outputs.tag }}"
-          body: "请检视资源列表以下载并安装此版本应用程序。"
-          draft: true
-
   build:
     needs: [prepare]
     permissions:
