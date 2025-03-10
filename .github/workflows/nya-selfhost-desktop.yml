@@ -91,13 +91,14 @@ jobs:
           args: ${{ matrix.args }}
           projectPath: "./packages/hoppscotch-selfhost-desktop"
           includeDebug: true
+          includeRelease: false
 
       - name: Upload debug artifacts
         if: "!startsWith(github.event.ref, 'refs/tags/')"
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.identifier }}
-          path: packages/hoppscotch-selfhost-desktop/src-tauri/target/
+          path: packages/hoppscotch-selfhost-desktop/src-tauri/target/**/bundle
 
       - name: Build release artifacts
         if: startsWith(github.event.ref, 'refs/tags/')
