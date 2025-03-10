@@ -48,7 +48,7 @@ jobs:
           - platform: "macos-latest" # for Intel based macs.
             args: "--target x86_64-apple-darwin"
             identifier: "macos-amd64"
-          - platform: "ubuntu-20.04" # for Tauri v1 you could replace this with ubuntu-20.04.
+          - platform: "ubuntu-22.04"
             args: ""
             identifier: "linux"
           - platform: "windows-latest"
@@ -76,13 +76,11 @@ jobs:
           # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: Install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-20.04' # This must match the platform value defined above.
+      - name: Install dependencies (Linux only)
+        if: matrix.identifier == 'linux'
         run: |
           sudo apt update
-          sudo apt install -y libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf libgtk-3-dev
-        # webkitgtk 4.0 is for Tauri v1 - webkitgtk 4.1 is for Tauri v2.
-        # You can remove the one that doesn't apply to your app to speed up the workflow a bit.
+          sudo apt install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libglib2.0-dev libgtk-3-dev
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
