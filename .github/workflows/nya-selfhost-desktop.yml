@@ -1,4 +1,4 @@
-name: "Build Desktop Application"
+name: "Nya Desktop Application"
 
 on:
   push:
