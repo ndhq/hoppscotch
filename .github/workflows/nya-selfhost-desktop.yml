@@ -1,4 +1,4 @@
-name: "Build Desktop application"
+name: "Build Desktop Application"
 
 on:
   push:
@@ -11,7 +11,28 @@ on:
       - nya
 
 jobs:
+  prepare-release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.ver.outputs.tag }}
+    steps:
+
+      - name: Prepare version tag
+        id: ver
+        run: echo "tag=$(jq .package.version packages/hoppscotch-desktop/src-tauri/tauri.conf.json | tr -d '"')" >> $GITHUB_OUTPUT
+
+      - name: Prepare release
+        if: startsWith(github.event.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@2
+        with:
+          name: "Hoppscotch (nya) v${{ steps.ver.outputs.tag }}"
+          body: "请检视资源列表以下载并安装此版本应用程序。"
+          draft: true
+
   build-tauri:
+    needs: [prepare-release]
     permissions:
       contents: write
     strategy:
@@ -33,6 +54,11 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
     steps:
+
+      #############################################
+      ##                 Prepare                 ##
+      #############################################
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -60,6 +86,10 @@ jobs:
         with:
           run_install: false
 
+      #############################################
+      ##                  Build                  ##
+      #############################################
+
       - name: Prepare dotenv for backend
         run: |
           cp .env.example .env
@@ -75,41 +105,133 @@ jobs:
       - name: Install all dependencies
         run: pnpm install --frozen-lockfile --force
 
-      - name: Prepare GraphQL code
-        run: |
-          cd ./packages/hoppscotch-selfhost-desktop/
-          pnpm gql-codegen
-
-      # If tagName and releaseId are omitted tauri-action will only build the app and won't try to upload any assets.
-      - name: Build debug artifacts
-        id: buildDebug
-        if: "!startsWith(github.event.ref, 'refs/tags/')"
-        uses: tauri-apps/tauri-action@v0
+      - name: Prepare for full build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: ${{ matrix.args }}
-          projectPath: "./packages/hoppscotch-selfhost-desktop"
-          includeDebug: true
-          includeRelease: false
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+        run: |
+          cd ./packages/hoppscotch-desktop/
+          pnpm build:full
 
-      - name: Upload debug artifacts
-        if: "!startsWith(github.event.ref, 'refs/tags/')"
+      #############################################
+      ##     Move & upload release artifacts     ##
+      #############################################
+
+      - name: Move files (Windows)
+        if: matrix.identifier == 'windows'
+        shell: pwsh
+        run: |
+          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare-release.outputs.tag }}_x64_en-US.msi" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi"
+          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare-release.outputs.tag }}_x64_en-US.msi.zip" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi.zip"
+          Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare-release.outputs.tag }}_x64_en-US.msi.zip.sig" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi.zip.sig"
+      - name: Upload files as artifacts (Windows)
+        if: !startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'windows'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.identifier }}
-          path: packages/hoppscotch-selfhost-desktop/src-tauri/target/**/bundle
+          path: |
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.zip
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.zip.sig
+      - name: Upload files to release (Windows)
+        if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'windows'
+        uses: softprops/action-gh-release@2
+        with:
+          files: |
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.zip
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/msi/Hoppscotch-amd64.msi.zip.sig
 
-      - name: Build release artifacts
-        if: startsWith(github.event.ref, 'refs/tags/')
-        uses: tauri-apps/tauri-action@v0
+      - name: Move files (Linux)
+        if: matrix.identifier == 'linux'
+        run: |
+          mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/hoppscotch_${{ needs.prepare-release.outputs.tag }}_amd64.deb" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb"
+          mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/hoppscotch_${{ needs.prepare-release.outputs.tag }}_amd64.AppImage" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage"
+          mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/hoppscotch_${{ needs.prepare-release.outputs.tag }}_amd64.AppImage.tar.gz" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz"
+          mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/hoppscotch_${{ needs.prepare-release.outputs.tag }}_amd64.AppImage.tar.gz.sig" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig"
+      - name: Upload files as artifacts (Linux)
+        if: !startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.identifier }}
+          path: |
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig
+      - name: Upload files to release (Linux)
+        if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'linux'
+        uses: softprops/action-gh-release@2
+        with:
+          files: |
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz
+            packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig
+
+      - name: Move files (MacOS - ARM64)
+        if: matrix.identifier == 'macos-aarch64'
+        run: |
+          mv "packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/Hoppscotch_${{ needs.prepare-release.outputs.tag }}_aarch64.dmg" "packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/Hoppscotch-aarch64.dmg"
+          mv "packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch.app.tar.gz" "packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch-aarch64.app.tar.gz"
+          mv "packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch.app.tar.gz.sig" "packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch-aarch64.app.tar.gz.sig"
+      - name: Upload files as artifacts (MacOS - ARM64)
+        if: !startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'macos-aarch64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.identifier }}
+          path: |
+            packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/Hoppscotch-aarch64.dmg
+            packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch-aarch64.app.tar.gz
+            packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch-aarch64.app.tar.gz.sig
+      - name: Upload files to release (MacOS - ARM64)
+        if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'macos-aarch64'
+        uses: softprops/action-gh-release@2
+        with:
+          files: |
+            packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/Hoppscotch-aarch64.dmg
+            packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch-aarch64.app.tar.gz
+            packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch-aarch64.app.tar.gz.sig
+
+      - name: Move files (MacOS - AMD64)
+        if: matrix.identifier == 'macos-amd64'
+        run: |
+          mv "packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/Hoppscotch_${{ needs.prepare-release.outputs.tag }}_x64.dmg" "packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/Hoppscotch-amd64.dmg"
+          mv "packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch.app.tar.gz" "packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch-amd64.app.tar.gz"
+          mv "packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch.app.tar.gz.sig" "packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch-amd64.app.tar.gz.sig"
+      - name: Upload files as artifacts (MacOS - AMD64)
+        if: !startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'macos-amd64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.identifier }}
+          path: |
+            packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/Hoppscotch-amd64.dmg
+            packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch-amd64.app.tar.gz
+            packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch-amd64.app.tar.gz.sig
+      - name: Upload files to release (MacOS - ARM64)
+        if: startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'macos-amd64'
+        uses: softprops/action-gh-release@2
+        with:
+          files: |
+            packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/Hoppscotch-amd64.dmg
+            packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch-amd64.app.tar.gz
+            packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch-amd64.app.tar.gz.sig
+
+  # Update release.json
+  upload-release-json:
+    if: startsWith(github.event.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    needs: [build-tauri]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ndhq/prepare-tauri-update-json
+      - name: Install dependencies
+        run: npm ci
+      - name: Update release.json
+        run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: ${{ github.ref }}
-          releaseName: "Hoppscotch v__VERSION__" # the action automatically replaces \_\_VERSION\_\_ with the app version.
-          releaseBody: "请检视资源列表以下载并安装此版本应用程序。"
-          releaseDraft: true
-          prerelease: false
-          args: ${{ matrix.args }}
-          projectPath: "./packages/hoppscotch-selfhost-desktop"
