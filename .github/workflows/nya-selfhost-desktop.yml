@@ -165,7 +165,7 @@ jobs:
         if: matrix.identifier == 'linux'
         run: |
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.deb" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/deb/Hoppscotch-amd64.deb"
-          mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.rpm" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch-amd64.rpm"
+          mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch_${{ needs.prepare.outputs.tag }}_x86_64.rpm" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/rpm/Hoppscotch-amd64.rpm"
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.AppImage" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage"
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch_${{ needs.prepare.outputs.tag }}_amd64.AppImage.sig" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.sig"
       - name: Upload files as artifacts (Linux)
