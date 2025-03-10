@@ -88,8 +88,8 @@ jobs:
 
       - name: Prepare dotenv for backend
         run: |
-          cp .env.example .env
-          cp .env.example ./packages/hoppscotch-backend/.env
+          cp .env.nya .env
+          cp .env.nya ./packages/hoppscotch-backend/.env
 
       - name: Prepare prisma for windows # Otherwise it's just not working
         if: matrix.platform == 'windows-latest'
