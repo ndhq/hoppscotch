@@ -24,7 +24,7 @@ jobs:
 
       - name: Prepare version tag
         id: ver
-        run: echo "tag=$(jq .package.version packages/hoppscotch-desktop/src-tauri/tauri.conf.json | tr -d '"')" >> $GITHUB_OUTPUT
+        run: echo "tag=$(jq .version packages/hoppscotch-desktop/src-tauri/tauri.conf.json | tr -d '"')" >> $GITHUB_OUTPUT
 
       - name: Prepare release
         if: startsWith(github.event.ref, 'refs/tags/')
