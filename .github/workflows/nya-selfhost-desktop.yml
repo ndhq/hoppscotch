@@ -20,12 +20,16 @@ jobs:
         include:
           - platform: "macos-latest" # for Arm based macs (M1 and above).
             args: "--target aarch64-apple-darwin"
+            identifier: "macos-aarch64"
           - platform: "macos-latest" # for Intel based macs.
             args: "--target x86_64-apple-darwin"
+            identifier: "macos-amd64"
           - platform: "ubuntu-20.04" # for Tauri v1 you could replace this with ubuntu-20.04.
             args: ""
+            identifier: "linux"
           - platform: "windows-latest"
             args: ""
+            identifier: "windows"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -77,7 +81,8 @@ jobs:
           pnpm gql-codegen
 
       # If tagName and releaseId are omitted tauri-action will only build the app and won't try to upload any assets.
-      - name: Just build
+      - name: Build debug artifacts
+        id: buildDebug
         if: "!startsWith(github.event.ref, 'refs/tags/')"
         uses: tauri-apps/tauri-action@v0
         env:
@@ -85,8 +90,17 @@ jobs:
         with:
           args: ${{ matrix.args }}
           projectPath: "./packages/hoppscotch-selfhost-desktop"
+          includeDebug: true
+          includeRelease: false
 
-      - name: Create release with artifacts
+      - name: Upload debug artifacts
+        if: "!startsWith(github.event.ref, 'refs/tags/')"
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.identifier }}
+          path: packages/hoppscotch-selfhost-desktop/src-tauri/target/**/bundle
+
+      - name: Build release artifacts
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: tauri-apps/tauri-action@v0
         env:
