@@ -125,7 +125,7 @@ jobs:
           Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare-release.outputs.tag }}_x64_en-US.msi.zip" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi.zip"
           Move-Item "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch_${{ needs.prepare-release.outputs.tag }}_x64_en-US.msi.zip.sig" "packages\hoppscotch-desktop\src-tauri\target\release\bundle\msi\Hoppscotch-amd64.msi.zip.sig"
       - name: Upload files as artifacts (Windows)
-        if: !startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'windows'
+        if: "!startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'windows'"
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.identifier }}
@@ -150,7 +150,7 @@ jobs:
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/hoppscotch_${{ needs.prepare-release.outputs.tag }}_amd64.AppImage.tar.gz" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz"
           mv "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/hoppscotch_${{ needs.prepare-release.outputs.tag }}_amd64.AppImage.tar.gz.sig" "packages/hoppscotch-desktop/src-tauri/target/release/bundle/appimage/Hoppscotch-amd64.AppImage.tar.gz.sig"
       - name: Upload files as artifacts (Linux)
-        if: !startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'linux'
+        if: "!startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'linux'"
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.identifier }}
@@ -176,7 +176,7 @@ jobs:
           mv "packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch.app.tar.gz" "packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch-aarch64.app.tar.gz"
           mv "packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch.app.tar.gz.sig" "packages/hoppscotch-desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Hoppscotch-aarch64.app.tar.gz.sig"
       - name: Upload files as artifacts (MacOS - ARM64)
-        if: !startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'macos-aarch64'
+        if: "!startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'macos-aarch64'"
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.identifier }}
@@ -200,7 +200,7 @@ jobs:
           mv "packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch.app.tar.gz" "packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch-amd64.app.tar.gz"
           mv "packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch.app.tar.gz.sig" "packages/hoppscotch-desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Hoppscotch-amd64.app.tar.gz.sig"
       - name: Upload files as artifacts (MacOS - AMD64)
-        if: !startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'macos-amd64'
+        if: "!startsWith(github.event.ref, 'refs/tags/') && matrix.identifier == 'macos-amd64'"
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.identifier }}
