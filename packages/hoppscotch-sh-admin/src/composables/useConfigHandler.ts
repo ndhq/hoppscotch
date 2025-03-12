@@ -35,7 +35,7 @@ import {useToast} from './toast';
 import {useClientHandler} from './useClientHandler';
 
 /** Composable that handles all operations related to server configurations
- * @param updatedConfigs A Config Object contatining the updated configs
+ * @param updatedConfigs A Config Object containing the updated configs
  */
 export function useConfigHandler(updatedConfigs?: ServerConfigs) {
   const t = useI18n();
