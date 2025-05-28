@@ -53,7 +53,8 @@
       "passport-openidconnect": "npm:@ndhq/passport-openidconnect@0.1.2-nya",
       "@babel/runtime@<7.26.10": "7.26.10",
       "apiconnect-wsdl": "2.0.36",
-      "@xmldom/xmldom": "0.8.10"
+      "@xmldom/xmldom": "0.8.10",
+      "multer@1.4.5-lts.2": "2.0.0"
     },
     "packageExtensions": {
       "@hoppscotch/httpsnippet": {
