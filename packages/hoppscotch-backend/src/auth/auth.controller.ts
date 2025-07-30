@@ -77,7 +77,7 @@ export class AuthController {
   async verify(@Body() data: VerifyMagicDto, @Res() res: Response) {
     const authTokens = await this.authService.verifyMagicLinkTokens(data);
     if (E.isLeft(authTokens)) throwHTTPErr(authTokens.left);
-    authCookieHandler(res, authTokens.right, false, null);
+    authCookieHandler(res, authTokens.right, false, null, this.configService);
   }
 
   /**
@@ -96,7 +96,7 @@ export class AuthController {
       user,
     );
     if (E.isLeft(newTokenPair)) throwHTTPErr(newTokenPair.left);
-    authCookieHandler(res, newTokenPair.right, false, null);
+    authCookieHandler(res, newTokenPair.right, false, null, this.configService);
   }
 
   /**
@@ -122,6 +122,7 @@ export class AuthController {
       authTokens.right,
       true,
       req.authInfo.state.redirect_uri,
+      this.configService,
     );
   }
 
@@ -148,6 +149,7 @@ export class AuthController {
       authTokens.right,
       true,
       req.authInfo.state.redirect_uri,
+      this.configService,
     );
   }
 
@@ -174,6 +176,7 @@ export class AuthController {
       authTokens.right,
       true,
       req.authInfo.state.redirect_uri,
+      this.configService,
     );
   }
 

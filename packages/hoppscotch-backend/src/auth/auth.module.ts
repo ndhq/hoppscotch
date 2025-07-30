@@ -11,7 +11,7 @@ import { GithubStrategy } from './strategies/github.strategy';
 import { MicrosoftStrategy } from './strategies/microsoft.strategy';
 import { OIDCStrategy } from './strategies/oidc.strategy';
 import { AuthProvider, authProviderCheck } from './helper';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import {
   getConfiguredSSOProvidersFromInfraConfig,
   isInfraConfigTablePopulated,
@@ -23,15 +23,14 @@ import { InfraConfigModule } from 'src/infra-config/infra-config.module';
     UserModule,
     PassportModule,
     JwtModule.registerAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
+        secret: configService.get('INFRA.JWT_SECRET'),
       }),
     }),
     InfraConfigModule,
   ],
-  providers: [AuthService, JwtStrategy, RTJwtStrategy],
+  providers: [AuthService],
   controllers: [AuthController],
 })
 export class AuthModule {
@@ -61,7 +60,7 @@ export class AuthModule {
 
     return {
       module: AuthModule,
-      providers,
+      providers: [...providers, JwtStrategy, RTJwtStrategy],
     };
   }
 }

@@ -4,12 +4,10 @@ import {
   AuthPlatformDef,
   HoppUser,
 } from "@hoppscotch/common/platform/auth"
-import {
-  PersistenceService
-} from "@hoppscotch/common/services/persistence"
-import { listen } from '@tauri-apps/api/event'
-import { Body, getClient } from '@tauri-apps/api/http'
-import { open } from '@tauri-apps/api/shell'
+import { PersistenceService } from "@hoppscotch/common/services/persistence"
+import { listen } from "@tauri-apps/api/event"
+import { Body, getClient } from "@tauri-apps/api/http"
+import { open } from "@tauri-apps/api/shell"
 import { BehaviorSubject, Subject } from "rxjs"
 import { Store } from "tauri-plugin-store-api"
 import { Ref, ref, watch } from "vue"
@@ -23,7 +21,7 @@ const APP_DATA_PATH = "~/.hopp-desktop-app-data.dat"
 const persistenceService = getService(PersistenceService)
 
 async function logout() {
-  let client = await getClient();
+  let client = await getClient()
   await client.get(`${import.meta.env.VITE_BACKEND_API_URL}/auth/logout`)
 
   const store = new Store(APP_DATA_PATH)
@@ -33,15 +31,23 @@ async function logout() {
 }
 
 async function signInUserWithGithubFB() {
-  await open(`${import.meta.env.VITE_BACKEND_API_URL}/auth/github?redirect_uri=desktop`);
+  await open(
+    `${import.meta.env.VITE_BACKEND_API_URL}/auth/github?redirect_uri=desktop`
+  )
 }
 
 async function signInUserWithGoogleFB() {
-  await open(`${import.meta.env.VITE_BACKEND_API_URL}/auth/google?redirect_uri=desktop`);
+  await open(
+    `${import.meta.env.VITE_BACKEND_API_URL}/auth/google?redirect_uri=desktop`
+  )
 }
 
 async function signInUserWithMicrosoftFB() {
-  await open(`${import.meta.env.VITE_BACKEND_API_URL}/auth/microsoft?redirect_uri=desktop`);
+  await open(
+    `${
+      import.meta.env.VITE_BACKEND_API_URL
+    }/auth/microsoft?redirect_uri=desktop`
+  )
 }
 
 async function signInUserWithOIDCFB() {
@@ -49,7 +55,7 @@ async function signInUserWithOIDCFB() {
 }
 
 async function getInitialUserDetails() {
-  const store = new Store(APP_DATA_PATH);
+  const store = new Store(APP_DATA_PATH)
 
   try {
     const accessToken = await store.get("access_token")
@@ -64,20 +70,23 @@ async function getInitialUserDetails() {
         isAdmin
         createdOn
       }
-    }`}
-
-    let res = await client.post(`${import.meta.env.VITE_BACKEND_GQL_URL}`,
-      Body.json(body), {
-      headers: {
-        "Cookie": `access_token=${accessToken.value}`,
-      }
+    }`,
     }
+
+    let res = await client.post(
+      `${import.meta.env.VITE_BACKEND_GQL_URL}`,
+      Body.json(body),
+      {
+        headers: {
+          Cookie: `access_token=${accessToken.value}`,
+        },
+      }
     )
 
     return res.data
   } catch (error) {
     let res = {
-      error: "auth/cookies_not_found"
+      error: "auth/cookies_not_found",
     }
 
     return res
@@ -153,14 +162,17 @@ async function setInitialUser() {
 }
 
 async function refreshToken() {
-  const store = new Store(APP_DATA_PATH);
+  const store = new Store(APP_DATA_PATH)
   try {
     const refreshToken = await store.get("refresh_token")
 
     let client = await getClient()
-    let res = await client.get(`${import.meta.env.VITE_BACKEND_API_URL}/auth/refresh`, {
-      headers: { "Cookie": `refresh_token=${refreshToken.value}` }
-    })
+    let res = await client.get(
+      `${import.meta.env.VITE_BACKEND_API_URL}/auth/refresh`,
+      {
+        headers: { Cookie: `refresh_token=${refreshToken.value}` },
+      }
+    )
 
     setAuthCookies(res.rawHeaders)
 
@@ -179,13 +191,16 @@ async function refreshToken() {
 }
 
 async function sendMagicLink(email: string) {
-  const client = await getClient();
-  let url = `${import.meta.env.VITE_BACKEND_API_URL}/auth/signin?origin=desktop`;
+  const client = await getClient()
+  let url = `${import.meta.env.VITE_BACKEND_API_URL}/auth/signin?origin=desktop`
 
-  const res = await client.post(url, Body.json({ email }));
+  const res = await client.post(url, Body.json({ email }))
 
   if (res.data && res.data.deviceIdentifier) {
-    persistenceService.setLocalConfig("deviceIdentifier", res.data.deviceIdentifier)
+    persistenceService.setLocalConfig(
+      "deviceIdentifier",
+      res.data.deviceIdentifier
+    )
   } else {
     throw new Error("test: does not get device identifier")
   }
@@ -194,26 +209,25 @@ async function sendMagicLink(email: string) {
 }
 
 async function setAuthCookies(rawHeaders: Array<String>) {
-  let cookies = rawHeaders['set-cookie'].join("|")
+  let cookies = rawHeaders["set-cookie"].join("|")
 
-  const accessTokenMatch = cookies.match(/access_token=([^;]+)/);
-  const refreshTokenMatch = cookies.match(/refresh_token=([^;]+)/);
+  const accessTokenMatch = cookies.match(/access_token=([^;]+)/)
+  const refreshTokenMatch = cookies.match(/refresh_token=([^;]+)/)
 
   const store = new Store(APP_DATA_PATH)
 
   if (accessTokenMatch) {
-    const accessToken = accessTokenMatch[1];
+    const accessToken = accessTokenMatch[1]
     await store.set("access_token", { value: accessToken })
   }
 
   if (refreshTokenMatch) {
-    const refreshToken = refreshTokenMatch[1];
+    const refreshToken = refreshTokenMatch[1]
     await store.set("refresh_token", { value: refreshToken })
   }
 
   await store.save()
 }
-
 
 export const def: AuthPlatformDef = {
   getCurrentUserStream: () => currentUser$,
@@ -261,31 +275,36 @@ export const def: AuthPlatformDef = {
     return null
   },
   async performAuthInit() {
-    const probableUser = JSON.parse(persistenceService.getLocalConfig("login_state") ?? "null")
+    const probableUser = JSON.parse(
+      persistenceService.getLocalConfig("login_state") ?? "null"
+    )
     probableUser$.next(probableUser)
     await setInitialUser()
 
-    await listen('scheme-request-received', async (event: any) => {
-      let deep_link = event.payload as string;
+    await listen("scheme-request-received", async (event: any) => {
+      let deep_link = event.payload as string
 
-      const params = new URLSearchParams(deep_link.split('?')[1]);
-      const accessToken = params.get('access_token');
-      const refreshToken = params.get('refresh_token');
-      const token = params.get('token');
+      const params = new URLSearchParams(deep_link.split("?")[1])
+      const accessToken = params.get("access_token")
+      const refreshToken = params.get("refresh_token")
+      const token = params.get("token")
 
       function isNotNullOrUndefined(x: any) {
-        return x !== null && x !== undefined;
+        return x !== null && x !== undefined
       }
 
-      if (isNotNullOrUndefined(accessToken) && isNotNullOrUndefined(refreshToken)) {
+      if (
+        isNotNullOrUndefined(accessToken) &&
+        isNotNullOrUndefined(refreshToken)
+      ) {
         const store = new Store(APP_DATA_PATH)
 
-        await store.set("access_token", { value: accessToken });
-        await store.set("refresh_token", { value: refreshToken } );
+        await store.set("access_token", { value: accessToken })
+        await store.set("refresh_token", { value: refreshToken })
         await store.save()
 
         window.location.href = "/"
-        return;
+        return
       }
 
       if (isNotNullOrUndefined(token)) {
@@ -293,7 +312,7 @@ export const def: AuthPlatformDef = {
         await this.signInWithEmailLink("", "")
         await setInitialUser()
       }
-    });
+    })
   },
 
   waitProbableLoginToConfirm() {
@@ -334,7 +353,8 @@ export const def: AuthPlatformDef = {
     await signInUserWithOIDCFB()
   },
   async signInWithEmailLink(_email, _url) {
-    const deviceIdentifier = persistenceService.getLocalConfig("deviceIdentifier")
+    const deviceIdentifier =
+      persistenceService.getLocalConfig("deviceIdentifier")
 
     if (!deviceIdentifier) {
       throw new Error(
@@ -344,11 +364,14 @@ export const def: AuthPlatformDef = {
 
     let verifyToken = persistenceService.getLocalConfig("verifyToken")
 
-    const client = await getClient();
-    let res = await client.post(`${import.meta.env.VITE_BACKEND_API_URL}/auth/verify`, Body.json({
-      token: verifyToken,
-      deviceIdentifier
-    }));
+    const client = await getClient()
+    let res = await client.post(
+      `${import.meta.env.VITE_BACKEND_API_URL}/auth/verify`,
+      Body.json({
+        token: verifyToken,
+        deviceIdentifier,
+      })
+    )
 
     setAuthCookies(res.rawHeaders)
 
